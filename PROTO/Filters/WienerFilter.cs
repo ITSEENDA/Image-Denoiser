@@ -2,7 +2,7 @@
 using OpenCvSharp.Util;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
-using OpenCvSharp.
+//using OpenCvSharp.
 
 namespace PROTO.Filters
 {
