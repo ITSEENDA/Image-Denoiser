@@ -9,13 +9,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PROTO.Tools;
+using PROTO.Utils;
 
 namespace PROTO
 {
     public partial class LoginForm : Form
     {
-        //TODO: Password hasing
-        private const string DB_ACCOUNT_PATH = "db_login_accounts.txt";
         public LoginForm()
         {
             InitializeComponent();
@@ -27,17 +27,23 @@ namespace PROTO
         {
 
         }
-        private string GetDBAccountFilePath()
-        {
-            string currentParentPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName;
-            return $"{currentParentPath}/{DB_ACCOUNT_PATH}";
-        }
+
         private void OnRegisterButtonClick(object sender, EventArgs e)
         {
+            if (string.IsNullOrEmpty(usernameInput.Text) || string.IsNullOrEmpty(passwordInput.Text))
+            {
+                MessageBox.Show(
+                    "Username or password is empty",
+                    "Null input",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information
+                );
+                this.ActiveControl = usernameInput;
+                return;
+            }
             string usernameInputValue = usernameInput.Text;
-            string passwordInputValue = passwordInput.Text;
+            string passwordInputValue = Hasher.HashPassword(passwordInput.Text);
 
-            string filePath = GetDBAccountFilePath();
+            string filePath = FileDB.GetFilePath();
 
             if (File.Exists(filePath))
             {
@@ -52,6 +58,8 @@ namespace PROTO
                         //If there is a match then annouce account already existed
                         if (usernameInputValue == username)
                         {
+                            fs.Dispose();
+                            fs.Close();
                             MessageBox.Show(
                                 "Username is already existed, please try a different username",
                                 "Username existed",
@@ -82,14 +90,15 @@ namespace PROTO
             string usernameInputValue = usernameInput.Text;
             string passwordInputValue = passwordInput.Text;
 
-            string filePath = GetDBAccountFilePath();
+            string filePath = FileDB.GetFilePath();
+            Debug.WriteLine(filePath);
 
             if (File.Exists(filePath))
             {
                 using (StreamReader fs = new StreamReader(filePath))
                 {
                     string account;
-                    while ((account = fs.ReadLine()) != null)
+                    while ((account = fs.ReadLine()) != null && !string.IsNullOrEmpty(account))
                     {
                         //We proclaimed that accounts are saved with format {username}|{password} in DB
                         //(check db_login_accounts.txt to see the format)
@@ -98,10 +107,13 @@ namespace PROTO
                         string password = accountComponent[1];
 
                         //If there is a match then switch to image processing form and close this form
-                        if (usernameInputValue == username && passwordInputValue == password)
+                        if (usernameInputValue == username && Hasher.VerifyPassword(passwordInputValue, password))
                         {
                             Hide();
-                            var imageProcessingForm = new ImageProcessingForm();
+                            fs.Dispose();
+                            fs.Close();
+                            var imageProcessingForm = new ImageProcessingForm(username, password);
+                            imageProcessingForm.DeleteAccountClick += OnDeleteAccountButtonClick;
                             imageProcessingForm.ShowDialog();
                             Close();
                             return;
@@ -119,7 +131,38 @@ namespace PROTO
             passwordInput.Text = null;
             this.ActiveControl = usernameInput;
         }
+        private void OnDeleteAccountButtonClick(string deleteUsername, string deletePassword)
+        {
+            string filePath = FileDB.GetFilePath();
 
+            if (File.Exists(filePath))
+            {
+                StringBuilder newContent = new StringBuilder();
+                using (StreamReader fs = new StreamReader(filePath))
+                {
+                    string account;
+                    while ((account = fs.ReadLine()) != null && !string.IsNullOrEmpty(account))
+                    {
+                        if (account == "\n")
+                        {
+                            continue;
+                        }
+                        var accountComponent = account.Split('|');
+                        string username = accountComponent[0];
+
+                        if (deleteUsername == username)
+                        {
+                            continue;
+                        }
+                        newContent.Append(account).Append('\n');
+                    }
+                }
+                using (StreamWriter sw = new StreamWriter(filePath, false))
+                {
+                    sw.Write(newContent.ToString());
+                }
+            }
+        }
         #region KeyEvents
         private void CheckPasswordEnter(object sender, KeyEventArgs e)
         {
@@ -148,5 +191,6 @@ namespace PROTO
             }
         }
         #endregion
+
     }
 }

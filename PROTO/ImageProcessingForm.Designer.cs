@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace PROTO
 {
@@ -32,47 +31,25 @@ namespace PROTO
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.inputImageBox = new System.Windows.Forms.PictureBox();
-            this.outputImageBox = new System.Windows.Forms.PictureBox();
             this.loadButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.logoutButton = new System.Windows.Forms.Button();
-            this.outputWidthDimension = new System.Windows.Forms.TextBox();
-            this.outputHeightDimension = new System.Windows.Forms.TextBox();
-            this.pxUnitLabel = new System.Windows.Forms.Label();
-            this.filterOptionBox = new System.Windows.Forms.ComboBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.resetButton = new System.Windows.Forms.Button();
-            this.processButton = new System.Windows.Forms.Button();
-            this.currentSelectedSizeLabel = new System.Windows.Forms.Label();
-            this.outputZoomBar = new System.Windows.Forms.TrackBar();
             this.processTimer = new System.Windows.Forms.Timer(this.components);
             this.saveTimer = new System.Windows.Forms.Timer(this.components);
-            this.inputZoomBar = new System.Windows.Forms.TrackBar();
+            this.inputImageBox = new System.Windows.Forms.PictureBox();
+            this.outputImageBox = new System.Windows.Forms.PictureBox();
+            this.filterOptionBox = new System.Windows.Forms.ComboBox();
+            this.currentSelectedSizeLabel = new System.Windows.Forms.Label();
+            this.processButton = new System.Windows.Forms.Button();
+            this.resetButton = new System.Windows.Forms.Button();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.helloLabel = new System.Windows.Forms.Label();
+            this.deleteAccountButton = new System.Windows.Forms.Button();
+            this.changePasswordButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.inputImageBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.outputImageBox)).BeginInit();
             this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.outputZoomBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.inputZoomBar)).BeginInit();
             this.SuspendLayout();
-            // 
-            // inputImageBox
-            // 
-            this.inputImageBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.inputImageBox.Location = new System.Drawing.Point(12, 73);
-            this.inputImageBox.Name = "inputImageBox";
-            this.inputImageBox.Size = new System.Drawing.Size(254, 214);
-            this.inputImageBox.TabIndex = 0;
-            this.inputImageBox.TabStop = false;
-            // 
-            // outputImageBox
-            // 
-            this.outputImageBox.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.outputImageBox.Location = new System.Drawing.Point(534, 73);
-            this.outputImageBox.Name = "outputImageBox";
-            this.outputImageBox.Size = new System.Drawing.Size(254, 214);
-            this.outputImageBox.TabIndex = 1;
-            this.outputImageBox.TabStop = false;
             // 
             // loadButton
             // 
@@ -90,7 +67,7 @@ namespace PROTO
             // 
             this.saveButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.saveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.saveButton.Location = new System.Drawing.Point(626, 347);
+            this.saveButton.Location = new System.Drawing.Point(629, 309);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(119, 33);
             this.saveButton.TabIndex = 5;
@@ -110,31 +87,31 @@ namespace PROTO
             this.logoutButton.UseVisualStyleBackColor = true;
             this.logoutButton.Click += new System.EventHandler(this.OnLogoutButtonClick);
             // 
-            // outputWidthDimension
+            // processTimer
             // 
-            this.outputWidthDimension.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.outputWidthDimension.Location = new System.Drawing.Point(564, 302);
-            this.outputWidthDimension.Name = "outputWidthDimension";
-            this.outputWidthDimension.Size = new System.Drawing.Size(81, 22);
-            this.outputWidthDimension.TabIndex = 7;
+            this.processTimer.Interval = 50;
             // 
-            // outputHeightDimension
+            // saveTimer
             // 
-            this.outputHeightDimension.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.outputHeightDimension.Location = new System.Drawing.Point(674, 302);
-            this.outputHeightDimension.Name = "outputHeightDimension";
-            this.outputHeightDimension.Size = new System.Drawing.Size(81, 22);
-            this.outputHeightDimension.TabIndex = 8;
+            this.saveTimer.Interval = 50;
             // 
-            // pxUnitLabel
+            // inputImageBox
             // 
-            this.pxUnitLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.pxUnitLabel.AutoSize = true;
-            this.pxUnitLabel.Location = new System.Drawing.Point(761, 302);
-            this.pxUnitLabel.Name = "pxUnitLabel";
-            this.pxUnitLabel.Size = new System.Drawing.Size(21, 16);
-            this.pxUnitLabel.TabIndex = 9;
-            this.pxUnitLabel.Text = "px";
+            this.inputImageBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.inputImageBox.Location = new System.Drawing.Point(12, 73);
+            this.inputImageBox.Name = "inputImageBox";
+            this.inputImageBox.Size = new System.Drawing.Size(254, 214);
+            this.inputImageBox.TabIndex = 0;
+            this.inputImageBox.TabStop = false;
+            // 
+            // outputImageBox
+            // 
+            this.outputImageBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.outputImageBox.Location = new System.Drawing.Point(534, 73);
+            this.outputImageBox.Name = "outputImageBox";
+            this.outputImageBox.Size = new System.Drawing.Size(254, 214);
+            this.outputImageBox.TabIndex = 1;
+            this.outputImageBox.TabStop = false;
             // 
             // filterOptionBox
             // 
@@ -145,33 +122,15 @@ namespace PROTO
             this.filterOptionBox.Size = new System.Drawing.Size(191, 24);
             this.filterOptionBox.TabIndex = 2;
             // 
-            // panel3
+            // currentSelectedSizeLabel
             // 
-            this.panel3.Controls.Add(this.inputZoomBar);
-            this.panel3.Controls.Add(this.resetButton);
-            this.panel3.Controls.Add(this.processButton);
-            this.panel3.Controls.Add(this.currentSelectedSizeLabel);
-            this.panel3.Controls.Add(this.filterOptionBox);
-            this.panel3.Controls.Add(this.outputZoomBar);
-            this.panel3.Controls.Add(this.outputImageBox);
-            this.panel3.Controls.Add(this.inputImageBox);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(0, 0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(800, 450);
-            this.panel3.TabIndex = 14;
-            // 
-            // resetButton
-            // 
-            this.resetButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.resetButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.resetButton.Location = new System.Drawing.Point(346, 155);
-            this.resetButton.Name = "resetButton";
-            this.resetButton.Size = new System.Drawing.Size(106, 29);
-            this.resetButton.TabIndex = 12;
-            this.resetButton.Text = "ResetFilter";
-            this.resetButton.UseVisualStyleBackColor = true;
-            this.resetButton.Click += new System.EventHandler(this.OnResetButtonClick);
+            this.currentSelectedSizeLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.currentSelectedSizeLabel.AutoSize = true;
+            this.currentSelectedSizeLabel.Location = new System.Drawing.Point(531, 290);
+            this.currentSelectedSizeLabel.Name = "currentSelectedSizeLabel";
+            this.currentSelectedSizeLabel.Size = new System.Drawing.Size(202, 16);
+            this.currentSelectedSizeLabel.TabIndex = 11;
+            this.currentSelectedSizeLabel.Text = "Current selected size: 200x200 px";
             // 
             // processButton
             // 
@@ -185,54 +144,78 @@ namespace PROTO
             this.processButton.UseVisualStyleBackColor = true;
             this.processButton.Click += new System.EventHandler(this.OnProcessButtonClick);
             // 
-            // currentSelectedSizeLabel
+            // resetButton
             // 
-            this.currentSelectedSizeLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.currentSelectedSizeLabel.AutoSize = true;
-            this.currentSelectedSizeLabel.Location = new System.Drawing.Point(543, 54);
-            this.currentSelectedSizeLabel.Name = "currentSelectedSizeLabel";
-            this.currentSelectedSizeLabel.Size = new System.Drawing.Size(202, 16);
-            this.currentSelectedSizeLabel.TabIndex = 11;
-            this.currentSelectedSizeLabel.Text = "Current selected size: 200x200 px";
+            this.resetButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.resetButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.resetButton.Location = new System.Drawing.Point(346, 165);
+            this.resetButton.Name = "resetButton";
+            this.resetButton.Size = new System.Drawing.Size(106, 29);
+            this.resetButton.TabIndex = 12;
+            this.resetButton.Text = "ResetFilter";
+            this.resetButton.UseVisualStyleBackColor = true;
+            this.resetButton.Click += new System.EventHandler(this.OnResetButtonClick);
             // 
-            // outputZoomBar
+            // panel3
             // 
-            this.outputZoomBar.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.outputZoomBar.Location = new System.Drawing.Point(526, 12);
-            this.outputZoomBar.Maximum = 100;
-            this.outputZoomBar.Name = "outputZoomBar";
-            this.outputZoomBar.Size = new System.Drawing.Size(271, 56);
-            this.outputZoomBar.TabIndex = 10;
-            this.outputZoomBar.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.panel3.Controls.Add(this.changePasswordButton);
+            this.panel3.Controls.Add(this.saveButton);
+            this.panel3.Controls.Add(this.helloLabel);
+            this.panel3.Controls.Add(this.deleteAccountButton);
+            this.panel3.Controls.Add(this.resetButton);
+            this.panel3.Controls.Add(this.processButton);
+            this.panel3.Controls.Add(this.currentSelectedSizeLabel);
+            this.panel3.Controls.Add(this.filterOptionBox);
+            this.panel3.Controls.Add(this.outputImageBox);
+            this.panel3.Controls.Add(this.inputImageBox);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(800, 450);
+            this.panel3.TabIndex = 14;
             // 
-            // processTimer
+            // helloLabel
             // 
-            this.processTimer.Interval = 50;
+            this.helloLabel.AutoSize = true;
+            this.helloLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.helloLabel.Location = new System.Drawing.Point(12, 18);
+            this.helloLabel.Name = "helloLabel";
+            this.helloLabel.Size = new System.Drawing.Size(161, 32);
+            this.helloLabel.TabIndex = 16;
+            this.helloLabel.Text = "Hello user!";
             // 
-            // saveTimer
+            // deleteAccountButton
             // 
-            this.saveTimer.Interval = 50;
+            this.deleteAccountButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.deleteAccountButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.deleteAccountButton.ForeColor = System.Drawing.Color.Red;
+            this.deleteAccountButton.Location = new System.Drawing.Point(629, 12);
+            this.deleteAccountButton.Name = "deleteAccountButton";
+            this.deleteAccountButton.Size = new System.Drawing.Size(159, 34);
+            this.deleteAccountButton.TabIndex = 15;
+            this.deleteAccountButton.Text = "Delete Account";
+            this.deleteAccountButton.UseVisualStyleBackColor = true;
+            this.deleteAccountButton.Click += new System.EventHandler(this.OnDeleteAccountClick);
             // 
-            // inputZoomBar
+            // changePasswordButton
             // 
-            this.inputZoomBar.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.inputZoomBar.Location = new System.Drawing.Point(3, 14);
-            this.inputZoomBar.Maximum = 100;
-            this.inputZoomBar.Name = "inputZoomBar";
-            this.inputZoomBar.Size = new System.Drawing.Size(271, 56);
-            this.inputZoomBar.TabIndex = 13;
-            this.inputZoomBar.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.changePasswordButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.changePasswordButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.changePasswordButton.ForeColor = System.Drawing.Color.Black;
+            this.changePasswordButton.Location = new System.Drawing.Point(431, 12);
+            this.changePasswordButton.Name = "changePasswordButton";
+            this.changePasswordButton.Size = new System.Drawing.Size(192, 34);
+            this.changePasswordButton.TabIndex = 17;
+            this.changePasswordButton.Text = "Change Password";
+            this.changePasswordButton.UseVisualStyleBackColor = true;
+            this.changePasswordButton.Click += new System.EventHandler(this.OnChangePasswordButtonClick);
             // 
             // ImageProcessingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.pxUnitLabel);
-            this.Controls.Add(this.outputHeightDimension);
-            this.Controls.Add(this.outputWidthDimension);
             this.Controls.Add(this.logoutButton);
-            this.Controls.Add(this.saveButton);
             this.Controls.Add(this.loadButton);
             this.Controls.Add(this.panel3);
             this.MinimumSize = new System.Drawing.Size(818, 497);
@@ -242,10 +225,7 @@ namespace PROTO
             ((System.ComponentModel.ISupportInitialize)(this.outputImageBox)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.outputZoomBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.inputZoomBar)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -253,23 +233,20 @@ namespace PROTO
 
 
         #endregion
-
-        private System.Windows.Forms.PictureBox inputImageBox;
-        private System.Windows.Forms.PictureBox outputImageBox;
         private System.Windows.Forms.Button loadButton;
         private System.Windows.Forms.Button saveButton;
         private System.Windows.Forms.Button logoutButton;
-        private System.Windows.Forms.TextBox outputWidthDimension;
-        private System.Windows.Forms.TextBox outputHeightDimension;
-        private System.Windows.Forms.Label pxUnitLabel;
-        private System.Windows.Forms.ComboBox filterOptionBox;
-        private System.Windows.Forms.Panel panel3;
-        private Label currentSelectedSizeLabel;
-        private TrackBar outputZoomBar;
-        private Button processButton;
         private Timer processTimer;
         private Timer saveTimer;
+        private PictureBox inputImageBox;
+        private PictureBox outputImageBox;
+        private ComboBox filterOptionBox;
+        private Label currentSelectedSizeLabel;
+        private Button processButton;
         private Button resetButton;
-        private TrackBar inputZoomBar;
+        private Panel panel3;
+        private Label helloLabel;
+        private Button deleteAccountButton;
+        private Button changePasswordButton;
     }
 }

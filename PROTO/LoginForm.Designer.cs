@@ -47,7 +47,7 @@ namespace PROTO
             | System.Windows.Forms.AnchorStyles.Right)));
             this.loginTitle.AutoSize = true;
             this.loginTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F);
-            this.loginTitle.Location = new System.Drawing.Point(331, 63);
+            this.loginTitle.Location = new System.Drawing.Point(331, 44);
             this.loginTitle.Name = "loginTitle";
             this.loginTitle.Size = new System.Drawing.Size(118, 46);
             this.loginTitle.TabIndex = 0;
@@ -81,7 +81,7 @@ namespace PROTO
             // loginButton
             // 
             this.loginButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.loginButton.Location = new System.Drawing.Point(437, 271);
+            this.loginButton.Location = new System.Drawing.Point(447, 264);
             this.loginButton.Name = "loginButton";
             this.loginButton.Size = new System.Drawing.Size(98, 34);
             this.loginButton.TabIndex = 3;
@@ -93,7 +93,7 @@ namespace PROTO
             // registerButton
             // 
             this.registerButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.registerButton.Location = new System.Drawing.Point(257, 271);
+            this.registerButton.Location = new System.Drawing.Point(247, 264);
             this.registerButton.Name = "registerButton";
             this.registerButton.Size = new System.Drawing.Size(98, 34);
             this.registerButton.TabIndex = 4;

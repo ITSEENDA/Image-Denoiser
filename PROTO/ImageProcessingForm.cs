@@ -1,43 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using PROTO.Filters;
 using PROTO.Tools;
-using System.Drawing.Drawing2D;
 
 namespace PROTO
 {
     public partial class ImageProcessingForm : Form
     {
+        public event Action<string, string> DeleteAccountClick;
+
         private Rectangle _inputImageRect, _outputImageRect, 
             _processButtonRect, _filterOptionRect, _loadButtonRect, _saveButtonRect,
-            _zoomBarRect, _outputWidthDimensionRect, _outputHeightDimensionRect, _pxUnitRect,
             _currentSelectedSizeRect, _resetButtonRect;
 
         private Size _baseFormSize;
-        private CropTool _cropProcess, _cropSave;
-        private ZoomTool _zoomInput, _zoomOutput;
+        private SelectionPen _cropProcess, _cropSave;
+        private string _currentUsername, _currentPassword;
 
-        public ImageProcessingForm()
+        //Khởi tạo filter, mốc vị trí kích cỡ, các tool và các event
+        public ImageProcessingForm(string username, string password)
         {
             InitializeComponent();
             InitializeFilterOption();
             InitializeSizes();
-            _cropProcess = new CropTool(Color.Yellow, inputImageBox, processTimer);
-            _cropSave = new CropTool(Color.Red, outputImageBox, saveTimer, currentSelectedSizeLabel);
-            _zoomInput = new ZoomTool(inputZoomBar);
-            _zoomOutput = new ZoomTool(outputZoomBar);
+            _cropProcess = new SelectionPen(Color.Yellow, inputImageBox, processTimer);
+            _cropSave = new SelectionPen(Color.Red, outputImageBox, saveTimer, currentSelectedSizeLabel);
             currentSelectedSizeLabel.Text = string.Empty;
+            _currentUsername = username;
+            _currentPassword = password;
+            helloLabel.Text = $"Hello user {username}!";
             InitializeEvents();
         }
 
+
+        //Khởi tạo các mốc vị trí và kích cỡ ban đầu để offset và resize các control khi
+        //window resize
         private void InitializeSizes()
         {
             _baseFormSize = this.Size;
@@ -47,14 +46,11 @@ namespace PROTO
             _filterOptionRect = new Rectangle(filterOptionBox.Location, filterOptionBox.Size);
             _loadButtonRect = new Rectangle(loadButton.Location, loadButton.Size);
             _saveButtonRect = new Rectangle(saveButton.Location, saveButton.Size);
-            _zoomBarRect = new Rectangle(outputZoomBar.Location, outputZoomBar.Size);
-            _outputWidthDimensionRect = new Rectangle(outputWidthDimension.Location, outputWidthDimension.Size);
-            _outputHeightDimensionRect = new Rectangle(outputHeightDimension.Location, outputHeightDimension.Size);
-            _pxUnitRect = new Rectangle(pxUnitLabel.Location, pxUnitLabel.Size);
             _currentSelectedSizeRect = new Rectangle(currentSelectedSizeLabel.Location, currentSelectedSizeLabel.Size);
             _resetButtonRect = new Rectangle(resetButton.Location, resetButton.Size);
         }
 
+        //Khởi tạo event cho các control và form
         private void InitializeEvents()
         {
             this.Resize += OnFormResize;
@@ -63,17 +59,15 @@ namespace PROTO
             inputImageBox.MouseUp += _cropProcess.OnSelectionUp;
             inputImageBox.MouseDown += _cropProcess.OnSelectionDown;
             inputImageBox.MouseMove += _cropProcess.OnSelectionMove;
-            //inputImageBox.MouseDoubleClick += _cropProcessPen.OnSelectionDoubleClick;
+
             outputImageBox.MouseEnter += OnSelectionEnter;
             outputImageBox.MouseLeave += OnSelectionLeave;
             outputImageBox.MouseUp += _cropSave.OnSelectionUp;
             outputImageBox.MouseDown += _cropSave.OnSelectionDown;
             outputImageBox.MouseMove += _cropSave.OnSelectionMove;
-            //outputImageBox.MouseDoubleClick += _cropSavePen.OnSelectionDoubleClick;
-
-            inputZoomBar.Scroll += _zoomInput.OnZoomBarScroll;
-            outputZoomBar.Scroll += _zoomOutput.OnZoomBarScroll;
         }
+
+        //Khởi tạo lựa chọn cho các filter
         private void InitializeFilterOption()
         {
             filterOptionBox.DataSource = new FilterOptionBase[]
@@ -81,12 +75,12 @@ namespace PROTO
                 new GaussianFilter(),
                 new BilateralFilter(),
                 new MedianFilter(),
-                new KuwaharaFilter(),
-                new WienerFilter(),
+                //new AnisotropicKuwaharaFilter(),
+                new AdaptiveWienerFilter(),
             };
         }
 
-
+        //Event thực hiện cập nhật ảnh output thành ảnh input ban đầu khi ấn nút reset
         private void OnResetButtonClick(object sender, EventArgs e)
         {
             if (inputImageBox.Image == null)
@@ -96,6 +90,22 @@ namespace PROTO
             outputImageBox.Image = inputImageBox.Image.Clone() as Bitmap;
         }
 
+        private void OnDeleteAccountClick(object sender, EventArgs e)
+        {
+            var dialogBox = MessageBox.Show(
+                "Do you want to delete current account?",
+                "Delete account",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning
+            );
+            if (dialogBox == DialogResult.No)
+            {
+                return;
+            }
+            DeleteAccountClick?.Invoke(_currentUsername, _currentPassword);
+            Logout();
+        }
+
+        //Event thực hiện đóng process đang chạy phần mềm nếu tắt form này
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
             inputImageBox.Dispose();
@@ -103,17 +113,33 @@ namespace PROTO
             base.OnFormClosed(e);
             Application.Exit();
         }
+
+        private void OnChangePasswordButtonClick(object sender, EventArgs e)
+        {
+            Hide();
+            var changePasswordForm = new ChangePasswordForm(_currentUsername, _currentPassword);
+            changePasswordForm.ShowDialog();
+            Close();
+        }
+
+        //Event load hình ảnh trong drive khi ấn vào nút load
         private void OnLoadButtonClick(object sender, EventArgs e)
         {
+
+            //Tạo dialog để mở các file định dạng .jpg, .png, .bmp
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Title = "Load an image",
                 Filter = "JPEG Files (*.jpg)|*.jpg|PNG Files (*.png)|*.png|" +
                 "BMP Files (*.bmp)|*.bmp"
             };
+
+            //Nếu người dùng ấn đồng ý thì kiểm tra đường dẫn file
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string filePath = openFileDialog.FileName;
+                //Nếu đường dẫn file không trống thì đọc dữ liệu file theo các byte để chuyển về memory stream
+                //và chuyển thành ảnh từ memory stream đó
                 if (!string.IsNullOrEmpty(filePath))
                 {
                     var bytes = System.IO.File.ReadAllBytes(filePath);
@@ -128,36 +154,47 @@ namespace PROTO
         }
 
 
-
+        //Event xử lý ảnh qua filter được chọn khi ấn vào nút process
         private void OnProcessButtonClick(object sender, EventArgs e)
         {
+            //Nếu input không có ảnh thì không làm gì cả
             if (inputImageBox.Image == null)
             {
                 return;
             }
+
+            //Lấy filter đang được chọn trong filterOptionBox để thực hiện áp filter
             var selectedFilter = filterOptionBox.SelectedItem as FilterOptionBase;
+            //Nếu filter được chọn rỗng thì bỏ qua
             if (selectedFilter != null)
             {
+                //Nếu đang trong selection của crop thì thực hiện lấy ảnh trong vùng selection
+                //rồi áp filter lên ảnh vừa lấy cuối cùng thì cập nhật lại vùng selection đó với ảnh
+                //vừa được xử lý qua filter
                 if (_cropProcess.IsSelecting)
                 {
                     var selectedBox = _cropProcess.GetAbsoluteSelectedBox();
                     var selectedImage = _cropProcess.GetImageWithinBounds();
                     var filteredImage = selectedFilter.FitlerImage(selectedImage) as Bitmap;
-                    //Debug.WriteLine($"{selectedImage.Size} - {filteredImage.Size}");
                     _cropSave.UpdateFilteredImageFromSelection(filteredImage, selectedBox);
                     return;
                 }
+
+                //Nếu không trong selection thì áp filter lên kích thước gốc của ảnh
                 outputImageBox.Image = selectedFilter.
                     FitlerImage(inputImageBox.Image);
             }
         }
         private void OnSaveButtonClick(object sender, EventArgs e)
         {
+            //Nếu output không có ảnh thì không làm gì cả
             if (outputImageBox.Image == null)
             {
                 return;
             }
 
+            //Tạo khung dialog để yêu cầu người dùng lưu file trong các định dạng
+            //.jpg; .png; .bmp
             SaveFileDialog saveFileDialog = new SaveFileDialog()
             {
                 Title = "Save processed image",
@@ -165,13 +202,12 @@ namespace PROTO
                 OverwritePrompt = true
             };
             saveFileDialog.ShowDialog();
+
+            //Nếu đường dẫn file không trống thì thực hiện save
             if (!string.IsNullOrEmpty(saveFileDialog.FileName))
             {
-                if (saveFileDialog.FileName == inputImageBox.Name)
-                {
-                    inputImageBox.Dispose();
-                }
-
+                //Nếu đang trong selection của crop thì output hình ảnh được lưu trong miền selection
+                //không thì lưu theo kích cỡ gốc của ảnh
                 var saveImage = _cropSave.IsSelecting ?
                     _cropSave.GetImageWithinBounds() : new Bitmap(outputImageBox.Image);
 
@@ -200,7 +236,7 @@ namespace PROTO
         }
 
 
-
+        //Event thực hiện tính toán thay đổi kích thước tương ứng khi window resize
         private void OnFormResize(object sender, EventArgs e)
         {
             ResizeControl(inputImageBox, _inputImageRect);
@@ -209,13 +245,11 @@ namespace PROTO
             ResizeControl(filterOptionBox, _filterOptionRect);
             ResizeControl(loadButton, _loadButtonRect);
             ResizeControl(saveButton, _saveButtonRect);
-            ResizeControl(outputZoomBar, _zoomBarRect);
-            ResizeControl(outputWidthDimension, _outputWidthDimensionRect);
-            ResizeControl(outputHeightDimension, _outputHeightDimensionRect);
-            ResizeControl(pxUnitLabel, _pxUnitRect);
             ResizeControl(currentSelectedSizeLabel, _currentSelectedSizeRect);
             ResizeControl(resetButton, _resetButtonRect);
         }
+
+        //Hàm tính toán tỉ lệ thay đổi theo % x, y rồi offset và resize control theo tỉ lệ phần trăm đó
         private void ResizeControl(Control control, Rectangle baseControlRect)
         {
             float xRatio = Width / _baseFormSize.Width;
@@ -227,22 +261,31 @@ namespace PROTO
             int newHeight = (int)(baseControlRect.Height * yRatio);
 
             control.Location = new Point(newPosX, newPosY);
+            //Không thực hiện resize với các control là button, label và textbox
             if (!(control is Button) && !(control is Label) && !(control is TextBox))
             {
                 control.Size = new Size(newWidth, newHeight);
             }
         }
+
+        //Event chuyển về login form khi ấn nút logout
         private void OnLogoutButtonClick(object sender, EventArgs e)
+        {
+            Logout();
+        }
+        private void Logout()
         {
             Hide();
             var loginForm = new LoginForm();
             loginForm.ShowDialog();
             Close();
         }
+        //Event chuyển con trỏ chuột thành hình thập khi rời khởi vùng có thể selection
         private void OnSelectionEnter(object sender, EventArgs e)
         {
             Cursor = Cursors.Cross;
         }
+        //Event chuyển con trỏ chuột thành mặc định khi rời khởi vùng có thể selection
         private void OnSelectionLeave(object sender, EventArgs e)
         {
             Cursor = Cursors.Default;
