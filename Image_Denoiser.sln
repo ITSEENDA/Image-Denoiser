@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PROTO", "PROTO\PROTO.csproj", "{D6D5DE3F-2AD5-4E4C-8E72-976A647AADF8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Image_Denoiser", "PROTO\Image_Denoiser.csproj", "{D6D5DE3F-2AD5-4E4C-8E72-976A647AADF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
